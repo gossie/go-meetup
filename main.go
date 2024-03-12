@@ -32,7 +32,7 @@ func main() {
 		panic(err)
 	}
 
-	http.HandleFunc("GET /random-character", trace(profile(getCharacter(t))))
+	http.HandleFunc("GET /random-characters", trace(profile(getCharacter(t))))
 
 	slog.Info("started server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -67,6 +67,10 @@ func getCharacter(t *template.Template) http.HandlerFunc {
 			numberOfCharacters = 1
 		}
 
+		if numberOfCharacters > 50 {
+			numberOfCharacters = 50
+		}
+
 		resultChan := make(chan *RMCharacter, numberOfCharacters)
 		errorChan := make(chan error, numberOfCharacters)
 
@@ -77,8 +81,8 @@ func getCharacter(t *template.Template) http.HandlerFunc {
 		characters := make([]RMCharacter, numberOfCharacters)
 		for i := range numberOfCharacters {
 			select {
-			case char := <-resultChan:
-				characters[i] = *char
+			case character := <-resultChan:
+				characters[i] = *character
 			case e := <-errorChan:
 				slog.WarnContext(r.Context(), e.Error())
 				w.WriteHeader(http.StatusInternalServerError)

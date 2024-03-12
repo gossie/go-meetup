@@ -18,7 +18,7 @@ func (lh *LogHandler) Handle(ctx context.Context, r slog.Record) error {
 	return lh.Handler.Handle(ctx, r)
 }
 func customizeLogging() {
-	handler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
 	wrapper := LogHandler{handler}
 	logger := slog.New(&wrapper)
 	slog.SetDefault(logger)
