@@ -32,7 +32,7 @@ func main() {
 		panic(err)
 	}
 
-	http.HandleFunc("GET /random-characters", trace(profile(getCharacter(t))))
+	http.HandleFunc("GET /random-characters", trace(profile(getCharacters(t))))
 
 	slog.Info("started server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -58,7 +58,7 @@ func retrieveCharacter(resultChan chan<- *RMCharacter, errorChan chan<- error) {
 	resultChan <- &rmCharacter
 }
 
-func getCharacter(t *template.Template) http.HandlerFunc {
+func getCharacters(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "retrieving random character")
 
